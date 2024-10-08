@@ -1,8 +1,8 @@
 .item{
-    width: 280px;
+    width: 300px;
 }
 .item img{
-    width: 280px;
+    width: 300px;
 }
 .item p{
 
@@ -33,7 +33,7 @@
         font-size: 14px;
     }
     .item img{
-        width: 20px;
+        width: 220px;
     }
     .item-price-old{
         font-size: 14px;
