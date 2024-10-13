@@ -111,7 +111,7 @@ app.post('/addproduct',async(req,res)=>{
 
 app.post("/removeproduct",async(req,res)=>{
   await Product.findOneAndDelete({id:req.body.id});
-  console.log(req.body.name+' has been removed');
+  console.log('has been removed');
   res.json({
     success:true,
     name:req.body.name
@@ -126,6 +126,79 @@ app.get('/allproducts',async(req,res)=>{
   res.send(products);  
 })
 
+// schema creating for user
+
+const Users = mongoose.model('Users',{
+  name:{
+    type:String,
+  },
+  email:{
+    type:String,
+    unique:true,
+  },
+  password:{
+    type:String,
+  },
+  cartData:{
+    type:Object,
+  },
+  date:{
+    type:Date,
+    default:Date.now,
+  }
+})
+
+//craeting endpoint for registering user
+app.post('/signup',async (req,res)=>{
+  let check = await Users.findOne({email:req.body.email});
+  if (check) {
+    return res.status(400).json({success:false,error:"exsting user"})
+  }
+  let cart ={};
+  for (let i = 0; i < 300; i++) {
+    cart[i]=0; 
+  }
+  const user = new Users({
+    name:req.body.name,
+    email:req.body.email,
+    password:req.body.password,
+    cartData:cart,
+  })
+
+  await user.save();
+
+  const data = {
+    user:{
+      id:user.id
+    }
+  }
+
+  const token = jwt.sign(data,'secret_ecom');
+  res.json({success:true,token})
+})
+
+//creating endpoint for user login
+app.post('/login',async(req,res)=>{
+  let user = await Users.findOne({email:req.body.email});
+  if (user) {
+    const passCompare = req.body.password === user.password;
+    if (passCompare) {
+      const data = {
+        user:{
+          id:user.id
+        }
+      }
+      const token =jwt.sign(data,'secret_ecom')
+      res.json({success:true,token});
+    }
+    else{
+      res.json({success:false,error:"password is wrong"})
+    }
+  }
+  else{
+    res.json({success:false,error:'wrong email'})
+  }
+})
 
 app.listen(port,(error)=>{
     if (!error) {
