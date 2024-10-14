@@ -200,6 +200,22 @@ app.post('/login',async(req,res)=>{
   }
 })
 
+  //creating end point for new collecton data
+  app.get('/newcollections',async(req,res)=>{
+    let products= await Product.find({});
+    let newcollection = products.slice(1).slice(-8);
+    console.log("new collection fecthed");
+    res.send(newcollection);
+})
+
+//creating endpoint for popular in women section
+app.get('/popularinmen',async(req,res)=>{
+  let products = await Product.find({category:"men"})
+  let popular_in_men = products.slice(0,4)
+  console.log("popular men fetched");
+  res.send(popular_in_men);
+})
+
 app.listen(port,(error)=>{
     if (!error) {
         console.log('server up on :'+port);
