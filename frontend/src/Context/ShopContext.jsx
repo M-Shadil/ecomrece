@@ -27,7 +27,8 @@ const ShopContextProvider = (props) =>{
                     "Content-Type":'application/json'
                 },
                 body:'',
-            }).then((response)=>response.js())
+            }).then((response)=>response.json())
+            .then((data)=>setCartItems(data));
         }
     },[])
 
